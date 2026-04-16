@@ -22,4 +22,33 @@ export class UserService {
       age: user.age,
     };
   }
+
+  getUserById(id: string) {
+    return {
+      id: id,
+      success: true,
+      name: id + 'Test',
+      msg: `This is User ${id}`,
+    };
+  }
+
+  getList(page: number, limit: number) {
+    // 模拟分页数据
+    return [
+      {
+        id: 1,
+        name: '张三',
+        age: 18,
+        page: page,
+        limit: limit,
+      },
+      {
+        id: 2,
+        name: '李四',
+        age: 19,
+        page: page,
+        limit: limit,
+      },
+    ];
+  }
 }

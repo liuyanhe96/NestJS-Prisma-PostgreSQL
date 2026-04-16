@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './user';
 
@@ -15,5 +15,16 @@ export class UserController {
   createUser(@Body() user: User) {
     // 业务中 要保持controller简洁 逻辑业务放入service
     return this.userService.createUser(user);
+  }
+
+  @Get('get/:id')
+  getUserById(@Param('id') id: string) {
+    return this.userService.getUserById(id);
+  }
+
+  @Get('list')
+  getList(@Query('page') page: number, @Query('limit') limit: number) {
+    // 模拟分页查询 调用db
+    return this.userService.getList(page, limit);
   }
 }
