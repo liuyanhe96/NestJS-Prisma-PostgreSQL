@@ -1,0 +1,132 @@
+// prisma/schema.prisma 数据模型定义文件
+
+// ─────────────────────────────────────────────────────────
+// generator 配置
+// Prisma 7 核心变化：
+//   provider 从 "prisma-client-js" 改为 "prisma-client"
+//   output 必须指定，生成到项目 src 目录下
+//   moduleFormat = "cjs" 是 NestJS 必须加的配置
+//     原因：Prisma 7 默认生成 ESM 格式，而 NestJS 使用 CommonJS
+//     不加这行会导致启动报错：Cannot use import statement in a module
+// ─────────────────────────────────────────────────────────
+generator client {
+  // provider = "prisma-client" 是 Prisma 7 的新写法
+  // Prisma 6 是 "prisma-client-js"
+  // 区别：Prisma 7 用纯 JS 实现，不依赖 Rust 二进制文件
+  provider = "prisma-client"
+
+  // output 指定生成的 Client 代码放到哪里
+  // Prisma 7 必须指定，不再默认生成到 node_modules
+  // 路径相对于 schema.prisma 文件所在目录（prisma/）
+  // ../src/generated/prisma 相当于项目根目录的 src/generated/prisma
+  output       = "../src/generated/prisma"
+
+  // moduleFormat 指定生成的代码格式
+  // "cjs" = CommonJS，NestJS 默认使用 CommonJS，必须写这行
+  // 如果不写，Prisma 7 默认生成 ESM 格式，NestJS 运行会报错
+  moduleFormat = "cjs"
+}
+
+// ─────────────────────────────────────────────────────────
+// datasource 配置
+// Prisma 7 变化：url 移到 prisma.config.ts 里配置
+// 这里只保留 provider，不再写 url = env("DATABASE_URL")
+// provider 指定数据库类型
+// 可选值：postgresql | mysql | sqlite | sqlserver | mongodb
+// ─────────────────────────────────────────────────────────
+datasource db {
+  provider = "postgresql"
+}
+
+// ─────────────────────────────────────────────────────────
+// User 模型 → 对应数据库 users 表
+// ─────────────────────────────────────────────────────────
+model User {
+  // @id 通常配合 @default 使用
+  // autoincrement() = 自增整数（1, 2, 3, 4...）
+  id        Int      @id @default(autoincrement())
+
+  // @unique 该字段值全表唯一，不能重复
+  // 插入重复值时 Prisma 会抛出 P2002 错误
+  email     String   @unique
+  name      String
+  password  String
+  role      String   @default("user") // 字符串默认值
+  createdAt DateTime @default(now()) // 时间默认值：now() 表示插入时取当前时间
+
+  // @updatedAt：每次 update 操作时自动更新为当前时间
+  // 不需要在代码里手动传这个字段
+  updatedAt DateTime @updatedAt
+  posts     Post[]
+  avatar  String?         // ? 表示可选，可以为 null
+  phone   String?         // 插入时不传这个字段也不报错
+
+  // @@map 指定数据库表名
+  // 如果不写，默认表名就是模型名（User），区分大小写
+  // 写了 @@map("users")，数据库里的表名就是 users（小写）
+  @@map("users")
+}
+
+// ─────────────────────────────────────────────────────────
+// Post 模型 → 对应数据库 posts 表
+// ─────────────────────────────────────────────────────────
+model Post {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String   @db.Text
+  published Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  authorId  Int
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@map("posts")
+}
+
+
+model Product {
+  id          Int      @id @default(autoincrement())
+
+  // 普通文本，PostgreSQL 存为 TEXT
+  name        String
+
+  // 限制最大长度为 100 个字符
+  sku         String   @db.VarChar(100)
+
+  // 长文本，适合存商品详情
+  description String   @db.Text
+
+  // 精确小数，@db.Decimal(10, 2) 表示最多 10 位，小数点后 2 位
+  // 价格存 Decimal 不会有浮点精度问题（Float 会有）
+  price       Decimal  @db.Decimal(10, 2)
+
+  // 库存数量，整数
+  stock       Int      @default(0)
+
+  // 评分，浮点数
+  rating      Float    @default(0.0)
+
+  // 是否上架
+  isActive    Boolean  @default(true)
+
+  // 商品创建时间
+  createdAt   DateTime @default(now())
+
+  // 商品图片列表，用 JSON 存储图片 URL 数组
+  images      Json     @default("[]")
+}
+
+model Article {
+  id        Int    @id @default(autoincrement())
+  title     String
+  status    String
+  authorId  Int
+  createdAt DateTime @default(now())
+
+  // @@index 给字段加索引，提升查询性能
+  // 适合经常作为 where 条件的字段
+  @@index([authorId])
+
+  // 多字段组合索引
+  @@index([status, createdAt])
+}
