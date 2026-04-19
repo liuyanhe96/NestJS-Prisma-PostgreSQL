@@ -5,9 +5,10 @@ import { UserModule } from './user/user.module'; // 直接引入子模块的Modu
 // import { UserController } from './user/user.controller';
 // import { UserService } from './user/user.service';
 import { OrderModule } from './order/order.module';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
-  imports: [UserModule, OrderModule], // 注册子模块
+  imports: [UserModule, OrderModule, PrismaModule], // 注册子模块
   controllers: [AppController], // 注册控制器
   providers: [AppService], // 注册服务
 })
