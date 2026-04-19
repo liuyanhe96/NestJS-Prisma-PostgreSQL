@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './user';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Controller('user')
 export class UserController {
@@ -21,9 +22,9 @@ export class UserController {
   }
 
   @Post('add')
-  createUser(@Body() user: User) {
+  createUser(@Body() user: CreateUserDto) {
     // 业务中 要保持controller简洁 逻辑业务放入service
-    return this.userService.createUser(user);
+    return this.userService.addUser(user);
   }
 
   @Get('get/:id')

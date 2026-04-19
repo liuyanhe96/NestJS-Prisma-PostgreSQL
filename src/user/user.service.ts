@@ -1,10 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { User } from './user';
 import { MailService } from './mail.service';
+import { CreateUserDto } from './dto/create-user.dto';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly mailService: MailService) {}
+  constructor(
+    private readonly mailService: MailService,
+    private readonly prisma: PrismaService,
+  ) {}
 
   // 模拟db中的数据
   private usersDB: User[] = [
@@ -36,16 +41,20 @@ export class UserService {
     return 'This is User Module';
   }
 
-  createUser(user: User) {
-    // 模拟创建
-    // service 也可以引入其他service功能
-    this.mailService.sendMail('xxxx@gmail.com', 'nihao', 'Have good day');
+  async addUser(user: CreateUserDto) {
+    const newUser = await this.prisma.user.create({
+      data: {
+        name: user.name,
+        email: user.email,
+        password: user.password,
+        role: user.role || 'user',
+      },
+    });
+
     return {
       success: true,
-      msg: `用户 ${user.name} 创建成功`,
-      id: Date.now(),
-      name: user.name,
-      age: user.age,
+      msg: `用户${user.name}-添加成功`,
+      data: newUser,
     };
   }
 

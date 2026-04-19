@@ -6,9 +6,19 @@ import { UserModule } from './user/user.module'; // 直接引入子模块的Modu
 // import { UserService } from './user/user.service';
 import { OrderModule } from './order/order.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { PostModule } from './post/post.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [UserModule, OrderModule, PrismaModule], // 注册子模块
+  imports: [
+    UserModule,
+    OrderModule,
+    PrismaModule,
+    PostModule,
+    ConfigModule.forRoot({
+      isGlobal: true, // 配置完后 process.env.DATABASE_URL就会有值了
+    }),
+  ], // 注册子模块
   controllers: [AppController], // 注册控制器
   providers: [AppService], // 注册服务
 })
