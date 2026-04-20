@@ -13,7 +13,7 @@ import { ConfigModule } from '@nestjs/config';
   imports: [
     UserModule,
     OrderModule,
-    PrismaModule,
+    PrismaModule, // 全局 Prisma（只注册一次）
     PostModule,
     ConfigModule.forRoot({
       isGlobal: true, // 配置完后 process.env.DATABASE_URL就会有值了
