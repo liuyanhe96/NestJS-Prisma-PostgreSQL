@@ -12,6 +12,7 @@ import { UserService } from './user.service';
 import { User } from './user';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { QueryUserDto } from './dto/query-user.dto';
 
 @Controller('user')
 export class UserController {
@@ -31,6 +32,11 @@ export class UserController {
   @Get('list')
   findAll() {
     return this.userService.findAll();
+  }
+
+  @Get('search')
+  searchUser(@Query() query: QueryUserDto) {
+    return this.userService.searchUser(query);
   }
 
   @Get(':id')
