@@ -53,9 +53,90 @@ export class UserService {
 
     return {
       success: true,
-      msg: `用户${user.name}-添加成功`,
+      message: `用户${user.name}-添加成功`,
       data: newUser,
     };
+  }
+
+  async findAll() {
+    const allUsers = await this.prisma.user.findMany({
+      select: {
+        // 指定查询的数据
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+      orderBy: {
+        //  排序
+        id: 'asc',
+      },
+    });
+    return {
+      success: true,
+      total: allUsers.length,
+      message: '查询所有用户成功',
+      data: allUsers,
+    };
+  }
+
+  async findOne(id: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: parseInt(id) },
+      select: {
+        // 指定查询的数据
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true,
+        posts: {
+          // 关联查询
+          select: {
+            id: true,
+            title: true,
+            content: true,
+            published: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+          orderBy: {
+            createdAt: 'desc',
+          },
+        },
+      },
+    });
+
+    if (!user)
+      return {
+        success: false,
+        message: `用户 ${id} 不存在`,
+      };
+
+    return {
+      success: true,
+      data: user,
+    };
+  }
+
+  async deleteUser(id: string) {
+    try {
+      await this.prisma.user.delete({
+        where: { id: parseInt(id) },
+      });
+      return {
+        success: true,
+        message: `删除 用户${id}  成功`,
+      };
+    } catch {
+      return {
+        success: false,
+        message: `用户${id} 不存在`,
+      };
+    }
   }
 
   getUserById(id: string) {
@@ -108,21 +189,6 @@ export class UserService {
       id: user.id,
       name: user.name,
       age: user.age,
-    };
-  }
-
-  deleteUser(id: string) {
-    const index = this.usersDB.findIndex((u) => u.id === parseInt(id));
-    if (index === -1) {
-      return {
-        success: false,
-        msg: `用户 ${id} 不存在`,
-      };
-    }
-    this.usersDB.splice(index, 1);
-    return {
-      success: true,
-      msg: `用户 ${id} 删除成功`,
     };
   }
 }

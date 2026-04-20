@@ -27,6 +27,21 @@ export class UserController {
     return this.userService.addUser(user);
   }
 
+  @Get('list')
+  findAll() {
+    return this.userService.findAll();
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.userService.findOne(id);
+  }
+
+  @Delete(':id')
+  deleteUser(@Param('id') id: string) {
+    return this.userService.deleteUser(id);
+  }
+
   @Get('get/:id')
   getUserById(@Param('id') id: string) {
     return this.userService.getUserById(id);
@@ -41,10 +56,5 @@ export class UserController {
   @Put('update/:id')
   updateUser(@Param('id') id: string, @Body() user: User) {
     return this.userService.updateUser(id, user);
-  }
-
-  @Delete('delete/:id')
-  deleteUser(@Param('id') id: string) {
-    return this.userService.deleteUser(id);
   }
 }
