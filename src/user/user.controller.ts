@@ -11,6 +11,7 @@ import {
 import { UserService } from './user.service';
 import { User } from './user';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('user')
 export class UserController {
@@ -42,6 +43,11 @@ export class UserController {
     return this.userService.deleteUser(id);
   }
 
+  @Put(':id')
+  updateUser(@Param('id') id: string, @Body() user: UpdateUserDto) {
+    return this.userService.updateUser(id, user);
+  }
+
   @Get('get/:id')
   getUserById(@Param('id') id: string) {
     return this.userService.getUserById(id);
@@ -54,7 +60,7 @@ export class UserController {
   }
 
   @Put('update/:id')
-  updateUser(@Param('id') id: string, @Body() user: User) {
+  updateUser1(@Param('id') id: string, @Body() user: User) {
     return this.userService.updateUser(id, user);
   }
 }

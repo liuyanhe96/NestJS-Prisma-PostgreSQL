@@ -78,6 +78,13 @@ model Post {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   authorId  Int
+
+  // onDelete 控制当关联的父记录被删除时，子记录怎么处理
+  // 有四个选项：
+  // Cascade  → 级联删除，删除用户时同时删除其所有文章（最常用）
+  // Restrict → 限制删除，如果用户有文章则不允许删除用户（默认值）
+  // SetNull  → 置空，删除用户时把文章的 authorId 设为 null（需要字段是可选的）
+  // NoAction → 不做任何操作（依赖数据库的默认行为）
   author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade) // Cascade删除用户 关联posts数据也会删除
 
   @@map("posts")

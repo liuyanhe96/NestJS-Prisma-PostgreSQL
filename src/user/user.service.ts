@@ -3,6 +3,7 @@ import { User } from './user';
 import { MailService } from './mail.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -139,6 +140,30 @@ export class UserService {
     }
   }
 
+  async updateUser(id: string, user: UpdateUserDto) {
+    try {
+      const newUser = await this.prisma.user.update({
+        where: { id: parseInt(id) },
+        data: {
+          name: user.name,
+          email: user.email,
+          password: user.password,
+          role: user.role,
+        },
+      });
+      return {
+        success: true,
+        message: `更新 用户-${user.name}  成功`,
+        data: newUser,
+      };
+    } catch {
+      return {
+        success: false,
+        message: `用户${id} 不存在`,
+      };
+    }
+  }
+
   getUserById(id: string) {
     return {
       id: id,
@@ -168,7 +193,7 @@ export class UserService {
     ];
   }
 
-  updateUser(id: string, user: User) {
+  updateUser1(id: string, user: User) {
     const index = this.usersDB.findIndex((u) => u.id === parseInt(id));
     if (index === -1) {
       return {
