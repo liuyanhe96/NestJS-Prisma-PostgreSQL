@@ -1,8 +1,6 @@
 # docker-compose.yml
 # 定义整个应用的所有服务（NestJS + PostgreSQL + Nginx）
 
-version: '3.8'
-
 services:
 
   # ── PostgreSQL 18 数据库服务 ──────────────────────────────
