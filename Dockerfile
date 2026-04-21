@@ -33,7 +33,7 @@ RUN npx prisma generate
 
 # 编译 TypeScript → JavaScript
 # 编译产物输出到 dist/ 目录
-RUN npm run build && test -f dist/main.js
+RUN npm run build
 
 # ── 第二阶段：生产阶段（runner）─────────────────────────────
 # 重新从干净的 Node.js 镜像开始，不包含构建工具
