@@ -16,7 +16,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # 安装所有依赖（包括 devDependencies，因为构建需要 TypeScript 编译器）
-RUN npm install
+RUN npm install --registry=https://registry.npmmirror.com
 
 # 复制 prisma 目录（包含 schema.prisma 和 migrations）
 COPY prisma ./prisma
