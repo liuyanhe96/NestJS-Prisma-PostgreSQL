@@ -57,8 +57,7 @@ RUN npm install --only=production
 COPY --from=builder /app/dist ./dist
 
 # 从 builder 阶段复制 Prisma 生成的 Client 代码
-# COPY --from=builder /app/src/generated ./src/generated
-COPY --from=builder /app/src/generated ./dist/src/generated
+COPY --from=builder /app/src/generated ./src/generated
 
 # 从 builder 阶段复制 prisma 目录（迁移时需要）
 COPY --from=builder /app/prisma ./prisma
