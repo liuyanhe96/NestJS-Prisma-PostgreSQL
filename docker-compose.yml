@@ -6,7 +6,7 @@ services:
   # ── PostgreSQL 18 数据库服务 ──────────────────────────────
   postgres:
     # 使用 PostgreSQL 18 官方镜像
-    image: postgres:18-alpine
+    image: postgres:18.2-alpine
     # 容器名称（方便查看日志和进入容器）
     container_name: nestjs_postgres
     # 容器崩溃或服务器重启后自动重启（always = 始终重启）
