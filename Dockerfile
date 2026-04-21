@@ -3,7 +3,7 @@
 # ── 第一阶段：构建阶段（builder）────────────────────────────
 # 使用 Node.js 20 Alpine 版本作为基础镜像
 # Alpine 是精简版 Linux，镜像体积更小（约 50MB vs Ubuntu 的 200MB+）
-FROM node:21-alpine AS builder
+FROM node:20-alpine AS builder
 
 # 设置工作目录（容器内的工作路径）
 WORKDIR /app
